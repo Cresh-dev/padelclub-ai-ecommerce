@@ -23,23 +23,33 @@ const generateRecommendations = async (userId, preferences) => {
       style: p.style,
     }));
 
-    const prompt = `Sei un esperto tecnico di attrezzatura da Padel, non un assistente vocale. 
-    Analizza questo profilo utente:
-    - Livello: ${preferences.skillLevel}
-    - Stile preferito: ${preferences.racketType}
-    - Esigenze: ${preferences.objectives}
-    - Richieste speciali: ${preferences.specialRequests || "Nessuna"}
+    const prompt = `Sei un software algoritmico di raccomandazione tecnica. NON sei un chatbot. Non usare MAI un linguaggio conversazionale.
 
-    Ecco i prodotti disponibili nel catalogo:
+    DATI UTENTE:
+    - Livello: ${preferences.skillLevel}
+    - Stile: ${preferences.racketType}
+    - Esigenze: ${preferences.objectives}
+    - Richieste: ${preferences.specialRequests || "Nessuna"}
+
+    CATALOGO DISPONIBILE:
     ${JSON.stringify(productList)}
 
-    Seleziona i 3 migliori prodotti per questo utente. 
-    
-    REGOLE FONDAMENTALI DI OUTPUT:
-    1. Rispondi ESCLUSIVAMENTE con un Array JSON valido in formato testo puro (senza blocchi markdown \`\`\`json).
-    2. Non inserire testo introduttivo o saluti.
-    3. Ogni oggetto deve avere due chiavi: "productId" (l'ID esatto) e "reasoning".
-    4. Nel "reasoning", scrivi 1-2 frasi tecniche sul perché le specifiche del prodotto si adattano all'utente. NON INSERIRE MAI frasi conversazionali come "Perfetto", "Ecco le opzioni", "Sto cercando". Vai dritto al punto.`;
+    ISTRUZIONI: Seleziona i 3 prodotti migliori. Restituisci ESCLUSIVAMENTE un array JSON in formato testo puro. 
+    Nel campo "reasoning" scrivi SOLO i dettagli tecnici che collegano il prodotto alle esigenze dell'utente.
+
+    ESEMPIO DI OUTPUT OBBLIGATORIO:
+    [
+      {
+        "productId": "id_del_prodotto_1",
+        "reasoning": "La forma a lacrima e il bilanciamento medio si sposano perfettamente con la tua richiesta di una racchetta equilibrata. Il telaio in carbonio è ideale per un giocatore di livello avanzato."
+      },
+      {
+        "productId": "id_del_prodotto_2",
+        "reasoning": "Rientra perfettamente nel tuo budget di 250 euro offrendo un piatto ruvido, ottimo per massimizzare gli effetti come hai richiesto."
+      }
+    ]
+
+    Genera il JSON per l'utente:`;
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
