@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_BASE_URL =
   import.meta.env.MODE === "production"
-    ? "https://padelclub-ai-ecommerce.onrender.com"
+    ? "https://padelclub-ai-ecommerce.onrender.com/api"
     : "http://localhost:8000/api";
 
 const api = axios.create({
