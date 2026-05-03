@@ -23,7 +23,7 @@ const generateRecommendations = async (userId, preferences) => {
       style: p.style,
     }));
 
-    const prompt = `Sei un esperto di attrezzatura da Padel. 
+    const prompt = `Sei un esperto tecnico di attrezzatura da Padel, non un assistente vocale. 
     Analizza questo profilo utente:
     - Livello: ${preferences.skillLevel}
     - Stile preferito: ${preferences.racketType}
@@ -34,10 +34,13 @@ const generateRecommendations = async (userId, preferences) => {
     ${JSON.stringify(productList)}
 
     Seleziona i 3 migliori prodotti per questo utente. 
-    DEVI rispondere ESATTAMENTE con un Array JSON valido, dove ogni oggetto ha due proprietà:
-    "productId" (stringa, l'ID esatto del prodotto) e "reasoning" (stringa, una spiegazione accattivante di massimo 2 frasi sul perché è perfetto per l'utente).`;
+    
+    REGOLE FONDAMENTALI DI OUTPUT:
+    1. Rispondi ESCLUSIVAMENTE con un Array JSON valido in formato testo puro (senza blocchi markdown \`\`\`json).
+    2. Non inserire testo introduttivo o saluti.
+    3. Ogni oggetto deve avere due chiavi: "productId" (l'ID esatto) e "reasoning".
+    4. Nel "reasoning", scrivi 1-2 frasi tecniche sul perché le specifiche del prodotto si adattano all'utente. NON INSERIRE MAI frasi conversazionali come "Perfetto", "Ecco le opzioni", "Sto cercando". Vai dritto al punto.`;
 
-    const model = getGeminiModel();
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
