@@ -1,0 +1,13 @@
+# Dipendenze (File pesantissimi, chi scarica il progetto farà 'npm install' per ricrearli)
+node_modules/
+client/node_modules/
+
+# Cartelle di build del frontend
+client/dist/
+
+# File di sistema
+.DS_Store
+Thumbs.db
+
+# LE PASSWORD E CHIAVI SEGRETE
+.env
