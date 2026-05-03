@@ -23,43 +23,55 @@ const generateRecommendations = async (userId, preferences) => {
       style: p.style,
     }));
 
-    const prompt = `Sei un software algoritmico di raccomandazione tecnica. NON sei un chatbot. Non usare MAI un linguaggio conversazionale.
+    const prompt = `Sei un severo algoritmo tecnico di raccomandazione. NON sei un assistente vocale.
 
-    DATI UTENTE:
+    DATI RICEVUTI:
     - Livello: ${preferences.skillLevel}
     - Stile: ${preferences.racketType}
-    - Esigenze: ${preferences.objectives}
-    - Richieste: ${preferences.specialRequests || "Nessuna"}
+    - Input Utente: ${preferences.objectives}
+    - Altro: ${preferences.specialRequests || "Nessuna"}
+
+    ATTENZIONE FONDAMENTALE: I "Dati Ricevuti" qui sopra potrebbero contenere frasi generate da un chatbot o dall'utente (es. "Fantastico!", "Ho capito", "Cerchi una..."). DEVI IGNORARE TUTTE QUESTE FRASI CONVERSAZIONALI. Non copiarle e non ripeterle MAI nell'output.
 
     CATALOGO DISPONIBILE:
     ${JSON.stringify(productList)}
 
-    ISTRUZIONI: Seleziona i 3 prodotti migliori. Restituisci ESCLUSIVAMENTE un array JSON in formato testo puro. 
-    Nel campo "reasoning" scrivi SOLO i dettagli tecnici che collegano il prodotto alle esigenze dell'utente.
+    ISTRUZIONI: Seleziona i 3 prodotti migliori dal catalogo. Restituisci ESCLUSIVAMENTE un array JSON.
+    Nel campo "reasoning" scrivi SOLO le specifiche tecniche reali del prodotto (peso, forma, materiali) e come aiutano il giocatore.
+    - VIETATO usare parole come "Fantastico", "Perfetto", "Ecco", "Ho trovato".
+    - VIETATO copiare o ripetere il testo dell'Input Utente. 
+    - Ogni "reasoning" DEVE essere diverso e specifico per le caratteristiche di quel singolo prodotto.
 
-    ESEMPIO DI OUTPUT OBBLIGATORIO:
+    ESEMPIO DI OUTPUT OBBLIGATORIO (copia questa esatta struttura JSON):
     [
       {
         "productId": "id_del_prodotto_1",
-        "reasoning": "La forma a lacrima e il bilanciamento medio si sposano perfettamente con la tua richiesta di una racchetta equilibrata. Il telaio in carbonio è ideale per un giocatore di livello avanzato."
+        "reasoning": "La forma a diamante e la schiuma EVA rigida garantiscono l'esplosività necessaria per i tuoi smash, mantenendo la precisione richiesta dal tuo livello avanzato."
       },
       {
         "productId": "id_del_prodotto_2",
-        "reasoning": "Rientra perfettamente nel tuo budget di 250 euro offrendo un piatto ruvido, ottimo per massimizzare gli effetti come hai richiesto."
+        "reasoning": "Questo modello rientra nel budget e offre un piatto ruvido in carbonio 12K, ottimo per massimizzare gli effetti e il controllo sui colpi lenti."
       }
-    ]
+    ]`;
 
-    Genera il JSON per l'utente:`;
-
+    const model = getGeminiModel();
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
     let recommendations = [];
     try {
-      recommendations = JSON.parse(responseText);
+      const cleanedText = responseText
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
+
+      recommendations = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error("Errore nel parsing JSON di Gemini:", responseText);
-      throw new Error("L'IA ha restituito un formato non valido.");
+      console.error(
+        "Errore nel parsing JSON di Gemini. Testo ricevuto originale:",
+        responseText,
+      );
+      throw new Error("L'IA ha restituito un formato non valido. Riprova.");
     }
 
     const recommendation = new Recommendation({

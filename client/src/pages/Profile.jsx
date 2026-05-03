@@ -132,7 +132,8 @@ export default function Profile() {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-          <div className="flex justify-between mb-6">
+          {/* FIX RESPONSIVE: Intestazione Player Card */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
               <h2 className="text-2xl font-black text-slate-900">
                 🎾 La tua Player Card
@@ -143,7 +144,7 @@ export default function Profile() {
             </div>
             <button
               onClick={copyShareLink}
-              className="bg-teal-50 text-teal-600 hover:bg-teal-100 font-bold px-4 py-2 rounded-xl border border-teal-200"
+              className="bg-teal-50 text-teal-600 hover:bg-teal-100 font-bold px-4 py-2 rounded-xl border border-teal-200 w-full sm:w-auto"
             >
               🔗 Condividi
             </button>
@@ -223,7 +224,9 @@ export default function Profile() {
               <label className="block text-sm font-bold text-slate-700 mb-2">
                 Il tuo Equipaggiamento (Gear)
               </label>
-              <div className="flex gap-2 mb-4">
+
+              {/* FIX RESPONSIVE: Menu a tendina e bottone Aggiungi */}
+              <div className="flex flex-col sm:flex-row gap-2 mb-4">
                 <select
                   value={selectedProductToAdd}
                   onChange={(e) => setSelectedProductToAdd(e.target.value)}
@@ -241,7 +244,7 @@ export default function Profile() {
                 <button
                   type="button"
                   onClick={addGear}
-                  className="bg-orange-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors"
+                  className="bg-orange-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition-colors w-full sm:w-auto"
                 >
                   Aggiungi
                 </button>
@@ -280,7 +283,7 @@ export default function Profile() {
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+            <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-100 gap-4">
               <span
                 className={`text-sm font-bold ${saveMessage.includes("❌") ? "text-red-500" : "text-teal-500"}`}
               >
@@ -289,7 +292,7 @@ export default function Profile() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="bg-slate-900 text-white font-bold px-6 py-3 rounded-xl hover:bg-slate-800 disabled:opacity-50"
+                className="bg-slate-900 text-white font-bold px-6 py-3 rounded-xl hover:bg-slate-800 disabled:opacity-50 w-full sm:w-auto"
               >
                 {isSaving ? "Salvataggio..." : "Salva Player Card"}
               </button>
