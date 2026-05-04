@@ -29,7 +29,7 @@ router.post("/", authMiddleware, async (req, res) => {
       - Se mancano delle informazioni, fai una domanda mirata per scoprirle.
       - Se hai capito TUTTO (livello, budget e cosa cerca), imposta "isComplete": true.
 
-      RISPONDI ESATTAMENTE CON UN OGGETTO JSON VALIDO CON QUESTA STRUTTURA:
+      RISPONDI ESATTAMENTE CON UN OGGETTO JSON VALIDO CON QUESTA STRUTTURA (Senza blocchi markdown):
       {
         "isComplete": booleano,
         "reply": "La tua risposta",
@@ -43,11 +43,17 @@ router.post("/", authMiddleware, async (req, res) => {
 
     const model = getGeminiModel();
     const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
 
     let aiResponse;
     try {
-      aiResponse = JSON.parse(result.response.text());
+      const cleanedText = responseText
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
+      aiResponse = JSON.parse(cleanedText);
     } catch (e) {
+      console.error("Errore parse JSON Chatbot. Testo ricevuto:", responseText);
       return res
         .status(500)
         .json({ error: "Errore di interpretazione dell'IA" });
@@ -89,7 +95,9 @@ router.post("/", authMiddleware, async (req, res) => {
           },
           recommendedProducts: recommendedProducts.map((p) => ({
             productId: p._id,
-            reasoning: aiResponse.reply,
+            reasoning:
+              p.description ||
+              `Selezionato da PadelBot in base al tuo livello: ${aiResponse.preferences.skillLevel || "N/A"}`,
           })),
         });
         await newRec.save();
