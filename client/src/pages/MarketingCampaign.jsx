@@ -5,7 +5,14 @@ import { useGlobal } from "../context/GlobalContext";
 
 export default function MarketingCampaign() {
   const { user } = useGlobal();
-  const [campaign, setCampaign] = useState(null);
+  const [campaign, setCampaign] = useState(() => {
+    const saved = localStorage.getItem("activeVipCampaign");
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,6 +24,7 @@ export default function MarketingCampaign() {
     try {
       const { data } = await api.get("/marketing/generate");
       setCampaign(data);
+      localStorage.setItem("activeVipCampaign", JSON.stringify(data));
     } catch (err) {
       setError(
         err.response?.data?.error ||

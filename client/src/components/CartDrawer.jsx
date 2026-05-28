@@ -1,5 +1,6 @@
 import { useGlobal } from "../context/GlobalContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function CartDrawer() {
   const {
@@ -9,9 +10,16 @@ export default function CartDrawer() {
     removeFromCart,
     updateQuantity,
     cartTotal,
+    appliedPromo,
+    promoDiscount,
+    promoGift,
+    applyPromoCode,
+    removePromoCode,
   } = useGlobal();
 
   const navigate = useNavigate();
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [promoError, setPromoError] = useState("");
 
   if (!isCartOpen) return null;
 
@@ -97,14 +105,104 @@ export default function CartDrawer() {
 
         {cart.length > 0 && (
           <div className="p-6 border-t border-slate-100 bg-white">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-slate-500 font-bold uppercase tracking-wider text-sm">
-                Totale
-              </span>
-              <span className="text-3xl font-black text-slate-900">
-                €{cartTotal.toFixed(2)}
-              </span>
+            {/* Promo Code Input */}
+            <div className="mb-6 pb-4 border-b border-slate-100">
+              {!appliedPromo ? (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                    Codice Promozionale
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Inserisci codice (es. VIP150)"
+                      value={promoCodeInput}
+                      onChange={(e) => {
+                        setPromoCodeInput(e.target.value);
+                        setPromoError("");
+                      }}
+                      className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500 outline-none font-medium uppercase font-mono text-slate-800"
+                    />
+                    <button
+                      onClick={() => {
+                        const res = applyPromoCode(promoCodeInput);
+                        if (res && !res.success) {
+                          setPromoError(res.message);
+                        } else {
+                          setPromoCodeInput("");
+                          setPromoError("");
+                        }
+                      }}
+                      className="px-4 py-2 bg-slate-900 text-white font-bold text-sm rounded-xl hover:bg-orange-500 transition-colors"
+                    >
+                      Applica
+                    </button>
+                  </div>
+                  {promoError && (
+                    <p className="text-red-500 text-xs mt-1.5 font-semibold">
+                      ⚠️ {promoError}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col gap-1.5 relative">
+                  <div className="flex justify-between items-center">
+                    <span className="bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full font-mono">
+                      {appliedPromo.promoCode}
+                    </span>
+                    <button
+                      onClick={removePromoCode}
+                      className="text-slate-400 hover:text-red-500 text-xs font-bold"
+                    >
+                      Rimuovi ✕
+                    </button>
+                  </div>
+                  <p className="text-slate-700 text-xs font-semibold leading-snug">
+                    {appliedPromo.condition || "Sconto applicato al carrello!"}
+                  </p>
+                  {promoGift && (
+                    <div className="mt-1 flex items-center gap-1.5 text-xs text-indigo-700 font-bold">
+                      <span>🎁 Omaggio:</span>
+                      <span className="bg-indigo-100 px-2 py-0.5 rounded text-indigo-800 font-mono">
+                        {promoGift}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+
+            <div className="space-y-2 mb-6">
+              {appliedPromo && promoDiscount > 0 && (
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-500 font-bold uppercase tracking-wider">
+                    Subtotale
+                  </span>
+                  <span className="font-semibold text-slate-700">
+                    €{cartTotal.toFixed(2)}
+                  </span>
+                </div>
+              )}
+              {appliedPromo && promoDiscount > 0 && (
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-emerald-600 font-bold uppercase tracking-wider flex items-center gap-1">
+                    🏷️ Sconto VIP
+                  </span>
+                  <span className="font-black text-emerald-600 font-mono">
+                    -€{promoDiscount.toFixed(2)}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                <span className="text-slate-500 font-bold uppercase tracking-wider text-sm">
+                  Totale
+                </span>
+                <span className="text-3xl font-black text-slate-900 font-mono">
+                  €{(cartTotal - promoDiscount).toFixed(2)}
+                </span>
+              </div>
+            </div>
+
             <button
               onClick={() => {
                 setIsCartOpen(false);
