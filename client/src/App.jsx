@@ -14,6 +14,7 @@ import Auth from "./pages/Auth";
 import ProductsCatalog from "./pages/ProductsCatalog";
 import RecommendationPage from "./pages/RecommendationPage";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import CookiesPolicy from "./pages/CookiesPolicy";
@@ -25,6 +26,7 @@ import Checkout from "./pages/Checkout";
 import MarketingCampaign from "./pages/MarketingCampaign";
 import Profile from "./pages/Profile";
 import PublicProfile from "./pages/PublicProfile";
+import AdminRoute from "./components/AdminRoute";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useGlobal();
@@ -76,6 +78,14 @@ function AppContent() {
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
           }
         />
 

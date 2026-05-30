@@ -21,6 +21,7 @@ app.use("/api/search", require("./server/routes/search"));
 app.use("/api/chatbot", require("./server/routes/chatbot"));
 app.use("/api/marketing", require("./server/routes/marketing"));
 app.use("/api/player", require("./server/routes/player"));
+app.use("/api/admin", require("./server/routes/admin"));
 
 // Health check
 app.get("/api/health", (req, res) => {
