@@ -14,7 +14,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "axios": "^1.15.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -22,7 +22,7 @@
     "react-router-dom": "^7.14.2",
     "recharts": "^3.8.1",
     "styled-components": "^6.4.1",
-    "vite": "^8.0.10"
+    "vite": "^5.4.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
