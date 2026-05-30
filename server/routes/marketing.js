@@ -22,6 +22,14 @@ router.get("/generate", authMiddleware, async (req, res) => {
       )
       .join(" | ");
 
+    // Sceglie casualmente la strategia per forzare varietà nelle offerte generate
+    const strategies = [
+      'SCONTO PERCENTUALE: usa discountType "percentage", scegli un valore tra 10% e 20%, e imposta una soglia minima di spesa tra 100€ e 200€.',
+      'SCONTO FISSO IN EURO: usa discountType "fixed", scegli un valore tra 10€ e 25€, e imposta una soglia minima di spesa tra 100€ e 200€.',
+      'BUNDLE (OMAGGIO): usa discountType "bundle", offri un prodotto omaggio fisico (es. palline, overgrip, fascia) se acquistano insieme due categorie specifiche.',
+    ];
+    const chosenStrategy = strategies[Math.floor(Math.random() * strategies.length)];
+
     const prompt = `
       Sei il Direttore Marketing (copywriter esperto) di un E-Commerce di Padel.
       Analizza questo storico di ricerche di un nostro utente:
@@ -29,9 +37,8 @@ router.get("/generate", authMiddleware, async (req, res) => {
 
       Scrivi una campagna di marketing 1-to-1 ALTAMENTE PERSONALIZZATA per lui.
       REGOLE BUSINESS TASSATIVE:
-      Non offrire MAI sconti incondizionati. Devi scegliere UNA di queste due strategie per garantire profitto:
-      1. SCONTO CON SOGLIA: Offri un codice sconto (es. 10% o 15€) valido SOLO per ordini superiori a una certa cifra (es. 150€ o 200€).
-      2. BUNDLE (PACCHETTO): Offri un vantaggio (es. un omaggio o uno sconto extra) SOLO se acquista due prodotti combinati (es. "Acquista la racchetta e le scarpe insieme e ti regaliamo il tubo di palline").
+      Non offrire MAI sconti incondizionati. Devi usare OBBLIGATORIAMENTE questa strategia specifica:
+      ${chosenStrategy}
       Le categorie valide nel nostro database sono: 'Racchette', 'Calzature', 'Accessori', 'Abbigliamento', 'Borse'.
 
       RISPONDI ESATTAMENTE CON UN OGGETTO JSON VALIDO CON QUESTA STRUTTURA:
