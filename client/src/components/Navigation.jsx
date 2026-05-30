@@ -57,6 +57,14 @@ export default function Navigation() {
                 >
                   👑 Area VIP
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className={`text-sm font-semibold transition-colors ${isActive("/admin") ? "text-orange-500" : "text-slate-600 hover:text-slate-900"}`}
+                  >
+                    📊 Admin
+                  </Link>
+                )}
               </>
             )}
 
@@ -177,6 +185,15 @@ export default function Navigation() {
               >
                 👑 Area VIP
               </Link>
+              {user?.role === 'admin' && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3 rounded-xl text-base font-semibold text-orange-500 hover:bg-slate-50"
+                >
+                  📊 Admin
+                </Link>
+              )}
               <Link
                 to="/profile"
                 onClick={() => setIsOpen(false)}

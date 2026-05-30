@@ -13,3 +13,17 @@
 body {
   background-color: var(--color-brand-surface);
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent Recharts overflow artifacts */
+.recharts-wrapper {
+  overflow: hidden !important;
+}
